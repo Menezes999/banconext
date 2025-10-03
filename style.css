@@ -1,0 +1,224 @@
+/* Variáveis para cores */
+:root {
+    --color-background: #000000;
+    --color-text-primary: #ffffff;
+    --color-neon-green: #00ff66;
+    --color-dark-gray: #1a1a1a;
+}
+
+/* Estilos Globais e Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Estilo do Container Principal (Simula a tela do celular) */
+.app-container {
+    width: 100%;
+    max-width: 400px; /* Largura típica de um celular */
+    background-color: var(--color-background);
+    padding: 15px;
+}
+
+/* 1. BARRA SUPERIOR */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.avatar {
+    background-color: var(--color-dark-gray);
+    color: var(--color-neon-green);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.username {
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.settings-icon {
+    color: var(--color-text-primary);
+    cursor: pointer; /* Adicionado para indicar clicável */
+}
+
+
+/* 2. SALDO DA CONTA */
+.account-balance {
+    margin-bottom: 30px;
+}
+
+.account-balance p {
+    font-size: 0.8em;
+    color: #999;
+    margin-bottom: 5px;
+}
+
+.balance-display {
+    display: flex;
+    align-items: center;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.eye-icon {
+    color: var(--color-neon-green);
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+/* 3. OPEN FINANCE BANNER */
+.banner {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.open-finance {
+    background: linear-gradient(to right, #333 30%, var(--color-neon-green) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.open-finance p {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: var(--color-text-primary);
+}
+
+.open-finance button {
+    background-color: var(--color-neon-green);
+    color: var(--color-background);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap; /* Evita quebra de linha em telas pequenas */
+    transition: background-color 0.2s; /* Adiciona transição */
+}
+
+.open-finance button:hover {
+    background-color: #00cc55; /* Escurece um pouco no hover */
+}
+
+
+/* 4. MENUS PRINCIPAIS */
+.main-menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+    gap: 15px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 5px;
+    cursor: pointer;
+    transition: background-color 0.2s; /* Adiciona transição */
+}
+
+.menu-item:hover {
+    background-color: #111; /* Pequeno destaque ao passar o mouse */
+    border-radius: 8px;
+}
+
+.menu-item span:first-child { /* O ícone */
+    color: var(--color-neon-green);
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.menu-item span:last-child { /* O texto */
+    font-size: 0.9em;
+}
+
+.ver-mais-btn {
+    background: none;
+    border: 1px solid var(--color-dark-gray);
+    color: var(--color-neon-green);
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 30px;
+    transition: border-color 0.2s; /* Adiciona transição */
+}
+
+.ver-mais-btn:hover {
+    border-color: var(--color-neon-green);
+}
+
+.ver-mais-btn .material-icons {
+    font-size: 1.2em;
+    margin-left: 5px;
+}
+
+/* 5. FOOTER / NEXTSHOP */
+.nextshop-banner {
+    background-color: var(--color-dark-gray);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.nextshop-banner p:first-child {
+    font-size: 0.8em;
+    color: var(--color-neon-green);
+    margin-bottom: 5px;
+}
+
+.nextshop-banner p:nth-child(2) {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.nextshop-banner button {
+    background-color: transparent;
+    border: 1px solid var(--color-neon-green);
+    color: var(--color-neon-green);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s; /* Adiciona transição */
+}
+
+.nextshop-banner button:hover {
+    background-color: rgba(0, 255, 102, 0.1); /* Um leve brilho no hover */
+}

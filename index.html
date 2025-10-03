@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>next - Conta Digital (Simulação de Acesso)</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Symbols+Outlined" rel="stylesheet">
 </head>
 <body>
 
     <div id="lock-screen" class="app-container">
         <div class="lock-content">
-            <div class="next-logo">next</div> 
+            <span class="material-symbols-outlined app-logo">rocket_launch</span>
             
             <div class="lock-user">
                 <span class="avatar">CM</span>
@@ -27,8 +27,17 @@
         </div>
     </div>
 
+    <div id="verification-overlay" class="verification-overlay hidden">
+        <span class="material-icons verification-icon">check_circle</span>
+        <p>Acesso Liberado!</p>
+    </div>
 
     <div id="main-app" class="app-container hidden"> 
+        
+        <div id="mobile-overlay" class="mobile-overlay">
+            <span>Acesse pelo Desktop</span>
+        </div>
+        
         <header class="top-bar">
             <div class="user-info">
                 <span class="avatar">CM</span>

@@ -3,13 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>next - Conta Digital (Design Simulado)</title>
+    <title>next - Conta Digital (Simulação de Acesso)</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 
-    <div class="app-container">
+    <div id="lock-screen" class="app-container lock-screen-active">
+        <div class="lock-content">
+            <span class="lock-time">14:21</span>
+            <div class="lock-user">
+                <span class="avatar">CM</span>
+                <span class="username">Cristiano Menezes</span>
+            </div>
+
+            <div id="fingerprint-btn" class="fingerprint-area">
+                <span class="material-icons fingerprint-icon">fingerprint</span>
+                <p>Toque para entrar</p>
+            </div>
+            
+            <p class="lock-footer">Arrastar para cima para outras opções</p>
+        </div>
+    </div>
+
+
+    <div id="main-app" class="app-container hidden"> 
         <header class="top-bar">
             <div class="user-info">
                 <span class="avatar">CM</span>

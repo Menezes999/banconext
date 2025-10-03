@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isHidden = true;
     const LONG_PRESS_TIME = 1000; // 1 segundo
     let pressTimer = null;
-    let isPressing = false; // Flag para garantir que só um timer rode
+    let isPressing = false; 
 
     // ----------------------------------------------------
     // INICIALIZAÇÃO E CONTROLE DE TELA
@@ -62,19 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeScreenState();
 
     // ----------------------------------------------------
-    // FUNÇÕES DE DESBLOQUEIO E ANIMAÇÃO
+    // FUNÇÕES DE DESBLOQUEIO E ANIMAÇÃO - CORREÇÃO DE BUG
     // ----------------------------------------------------
     
     const unlockApp = () => {
-        // Zera o timer e a flag
         clearTimeout(pressTimer);
         pressTimer = null;
         isPressing = false;
 
+        // 1. Esconde a tela de bloqueio
         lockScreen.classList.add('hidden');
         
+        // 2. Inicia a ANIMAÇÃO DE VERIFICAÇÃO (Símbolo Verificado Gigante)
         verificationOverlay.classList.add('active');
 
+        // 3. Após a animação, transiciona para a tela principal
         setTimeout(() => {
             verificationOverlay.classList.remove('active');
             mainApp.classList.remove('hidden');
@@ -85,13 +87,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função que começa a contagem do tempo (Long Press)
     const startPress = (e) => {
-        // Bloqueia clique no desktop se não for touch
-        if (!isMobileView() && e.type === 'mousedown') {
-            alert("Aviso: O desbloqueio de Biometria é simulado, mas a navegação completa só está disponível no Desktop.");
-            return;
+        if (e.type === 'mousedown' && !isMobileView()) {
+             alert("Aviso: O desbloqueio de Biometria é simulado, mas a navegação completa só está disponível no Desktop.");
+             return;
         }
 
-        // CORREÇÃO ESSENCIAL: Previne o disparo múltiplo e o zoom de touch
+        // CORREÇÃO ESSENCIAL: Previne o disparo múltiplo e o menu de contexto do navegador
         e.preventDefault(); 
         
         if (!isPressing) {
@@ -106,7 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Função que para a contagem do tempo (soltou o dedo/mouse)
-    const cancelPress = () => {
+    const cancelPress = (e) => {
+        // CORREÇÃO: Previne o menu de contexto no touch/mouse up
+        e.preventDefault();
+        
         if (isPressing) {
             // Se o timer ainda estiver ativo, significa que soltou antes do tempo
             if (pressTimer !== null) {
@@ -134,10 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
     fingerprintArea.addEventListener('mouseleave', cancelPress); 
 
     // Mobile/Touch Events
-    // Usamos {passive: false} para garantir que o preventDefault no startPress funcione corretamente
+    // Usamos {passive: false} para garantir que o preventDefault no startPress funcione
     fingerprintArea.addEventListener('touchstart', startPress, {passive: false});
     fingerprintArea.addEventListener('touchend', cancelPress);
     fingerprintArea.addEventListener('touchcancel', cancelPress);
+    
+    // CORREÇÃO EXTRA: Bloqueia o menu de contexto padrão (botão direito/long press) na área da digital
+    fingerprintArea.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        cancelPress(e); // Garante que o timer seja limpo
+    });
     
     // ----------------------------------------------------
     // FUNÇÕES DA TELA PRINCIPAL (Mantidas as correções anteriores)
@@ -145,10 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     balanceElement.textContent = hiddenBalance;
 
-    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho) - Isolar esta função é a chave.
+    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho) - Isolada e funcional
     if (toggleButtonElement) {
         toggleButtonElement.addEventListener('click', () => {
-            // Lógica de mostrar/esconder o saldo
             if (isHidden) {
                 balanceElement.textContent = actualBalance;
                 toggleButtonElement.textContent = 'visibility';

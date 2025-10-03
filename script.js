@@ -8,11 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const fingerprintIcon = document.querySelector('.fingerprint-icon');
     const verificationOverlay = document.getElementById('verification-overlay');
     const mobileOverlay = document.getElementById('mobile-overlay');
-    
-    // ATUALIZADO: Seleciona APENAS os elementos que devem ser desfocados no Mobile
     const menuBlurTargets = document.querySelectorAll('.menu-blur-target'); 
+    
+    // Elementos do Saldo
+    const balanceElement = document.getElementById('balance');
+    const toggleButtonElement = document.getElementById('toggle-balance');
 
-    // Elementos para o Desktop Overlay
+    // Elementos para o Desktop Overlay (Criado no JS, como antes)
     const desktopOverlay = document.createElement('div');
     desktopOverlay.id = 'desktop-overlay';
     desktopOverlay.innerHTML = 'Acesse pelo Desktop';
@@ -31,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isMobileView = () => window.innerWidth <= 600; 
     
-    // FUNÇÃO PARA ATUALIZAR O HORÁRIO
     const updateTime = () => {
         const timeElement = document.querySelector('.lock-time');
         const now = new Date();
@@ -42,20 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000); 
 
     const applyMobileBlur = () => {
-        // Aplica desfoque SOMENTE nos elementos designados
         menuBlurTargets.forEach(el => el.classList.add('menu-blur-target'));
         mobileOverlay.classList.add('active');
     }
 
     const initializeScreenState = () => {
         if (!isMobileView()) {
-            // Desktop: Bloqueio total
             document.body.appendChild(desktopOverlay);
             mainApp.classList.add('blurred');
             lockScreen.classList.add('blurred');
             mainApp.classList.remove('hidden'); 
         } else {
-            // Mobile: Exibe Lock Screen por padrão
             mainApp.classList.add('hidden');
             lockScreen.classList.remove('hidden');
         }
@@ -76,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             verificationOverlay.classList.remove('active');
             mainApp.classList.remove('hidden');
             
-            applyMobileBlur(); // Aplica o desfoque após a transição
+            applyMobileBlur();
         }, 1500); 
     };
 
@@ -112,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fingerprintArea.classList.remove('pressed');
     };
     
-    // ------------------- EVENT LISTENERS -------------------
+    // ------------------- EVENT LISTENERS - LOCK SCREEN -------------------
     
     fingerprintArea.addEventListener('mousedown', startPress);
     fingerprintArea.addEventListener('mouseup', cancelPress);
@@ -126,18 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
 
     // Saldo inicial (oculto)
-    document.getElementById('balance').textContent = hiddenBalance;
+    balanceElement.textContent = hiddenBalance;
 
-    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho)
-    const toggleButtonElement = document.getElementById('toggle-balance');
+    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho) - AGORA ISOLADA PARA NÃO GERAR ALERTA
     if (toggleButtonElement) {
         toggleButtonElement.addEventListener('click', () => {
             if (isHidden) {
-                document.getElementById('balance').textContent = actualBalance;
+                balanceElement.textContent = actualBalance;
                 toggleButtonElement.textContent = 'visibility';
                 isHidden = false;
             } else {
-                document.getElementById('balance').textContent = hiddenBalance;
+                balanceElement.textContent = hiddenBalance;
                 toggleButtonElement.textContent = 'visibility_off';
                 isHidden = true;
             }
@@ -148,11 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const functionalElements = document.querySelectorAll('#main-app [data-action]');
 
     functionalElements.forEach(element => {
+        // CORREÇÃO: Pula o elemento de toggle-balance para evitar o alerta "Ação Desconhecida"
+        if (element.id === 'toggle-balance') {
+            return; 
+        }
+
         element.addEventListener('click', (event) => {
             event.preventDefault();
             
-            // Impede a ação se o elemento pai ou o próprio elemento for um "menu-blur-target" e estiver desfocado
-            if (element.closest('.menu-blur-target') && element.closest('.menu-blur-target').classList.contains('menu-blur-target') || mainApp.classList.contains('blurred')) {
+            // Impede a ação se o elemento estiver desfocado (menu-blur-target) ou no Desktop (blurred)
+            const isBlurred = element.closest('.menu-blur-target') || mainApp.classList.contains('blurred');
+            if (isBlurred) {
                  return;
             }
             
@@ -166,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'pagamentos': message = 'Ação: Navegar para Pagamentos.'; break;
                 case 'ver-mais': message = 'Ação: Exibir todos os menus (Ver Mais).'; break;
                 case 'contratar-seguro': message = 'Ação: Iniciar Contratação do Seguro.'; break;
-                default: message = 'Ação Desconhecida: ' + action;
+                default: message = 'Ação Desconhecida: ' + action; // Mantido para botões novos
             }
 
             alert(message);

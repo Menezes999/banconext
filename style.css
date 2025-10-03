@@ -11,7 +11,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: all 0.5s ease; /* Transição suave geral para o desbloqueio */
+    /* Transição suave para o desbloqueio e desfoque */
+    transition: all 0.4s ease-in-out; 
 }
 
 body {
@@ -19,21 +20,32 @@ body {
     color: var(--color-text-primary);
     font-family: Arial, sans-serif;
     display: flex;
+    /* Centraliza o conteúdo (será a tela do app após o desbloqueio) */
     justify-content: center;
-    padding: 20px;
+    padding: 0; /* Remove o padding do body para a lock screen */
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--color-background);
+    padding: 15px;
+    /* Garante que o container principal fique no centro após o desbloqueio */
+    margin: 0 auto; 
 }
 
 /* ---------------------------------------------------- */
-/* ESTILOS DA TELA DE BLOQUEIO (NOVA SEÇÃO) */
+/* TELA DE BLOQUEIO (CORREÇÃO DE POSICIONAMENTO) */
 /* ---------------------------------------------------- */
-.lock-screen-active {
+#lock-screen {
+    /* Garante que a lock screen cubra toda a janela */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    max-width: none !important; /* Permite ocupar a tela inteira */
-    background-color: var(--color-background);
+    height: 100vh; /* Usa a altura da viewport */
+    max-width: none !important; 
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -52,41 +64,17 @@ body {
     padding: 50px 0 20px 0;
 }
 
-.lock-time {
-    font-size: 4em;
-    font-weight: 300;
-    color: #ccc;
-    margin-bottom: 20px;
-}
-
-.lock-user {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 50px;
-}
-
-.lock-user .avatar {
-    width: 60px;
-    height: 60px;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.lock-user .username {
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
+/* Estilos da Digital e Animação */
 .fingerprint-area {
     cursor: pointer;
+    position: relative;
+    /* Para centralizar o ícone de carregamento */
 }
 
 .fingerprint-icon {
     font-size: 6em;
     color: var(--color-neon-green);
     margin-bottom: 10px;
-    /* Animação legal para simular a leitura */
     animation: pulse-neon 2s infinite ease-in-out; 
 }
 
@@ -96,37 +84,54 @@ body {
     100% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
 }
 
-.lock-footer {
-    font-size: 0.8em;
-    color: #777;
+/* ---------------------------------------------------- */
+/* ESTILOS DA TELA PRINCIPAL (APÓS DESBLOQUEIO) */
+/* ---------------------------------------------------- */
+
+/* 1. Efeito de desfoque/opacidade para simular o bloqueio de Desktop */
+.blurred {
+    filter: blur(4px) grayscale(50%); /* Aplica desfoque e cinza */
+    opacity: 0.6;
+    pointer-events: none; /* Impede cliques nos botões/menus */
 }
 
-/* Classe para ocultar a tela */
+/* 2. Camada de aviso para Desktop */
+#desktop-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10; /* Fica acima da tela do app */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--color-neon-green);
+    font-size: 2.5em;
+    font-weight: bold;
+    padding: 20px;
+    /* Oculto por padrão no celular, mas visível no Desktop */
+}
+
+/* Classes utilitárias */
 .hidden {
     display: none !important;
 }
 
+/* O resto do CSS do banco (cores, menus, botões) continua o mesmo. */
 
-/* ---------------------------------------------------- */
-/* ESTILOS DA TELA PRINCIPAL (EXISTENTES) */
-/* ---------------------------------------------------- */
-
-.app-container {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--color-background);
-    padding: 15px;
-    /* Garante que o container principal fique no centro após o desbloqueio */
-    margin: auto; 
-}
-/* ... (Mantenha todo o CSS anterior para .top-bar, .account-balance, etc.) ... */
-
-/* Coloque os estilos do CSS anterior aqui para os componentes do banco */
-
-.top-bar { /* ... (continua) ... */ }
-.user-info { /* ... (continua) ... */ }
-.avatar { /* ... (continua) ... */ }
-.username { /* ... (continua) ... */ }
+/* ... (Mantenha o restante do CSS anterior aqui) ... */
+.lock-time { font-size: 4em; font-weight: 300; color: #ccc; margin-bottom: 20px; }
+.lock-user { display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; }
+.lock-user .avatar { width: 60px; height: 60px; font-size: 1.5em; margin-bottom: 10px; }
+.lock-user .username { font-size: 1.1em; font-weight: 600; }
+.lock-footer { font-size: 0.8em; color: #777; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
+.user-info { display: flex; align-items: center; }
+.avatar { background-color: var(--color-dark-gray); color: var(--color-neon-green); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-right: 10px; }
+.username { font-size: 1.2em; font-weight: 500; }
 .settings-icon { color: var(--color-text-primary); cursor: pointer; }
 .account-balance { margin-bottom: 30px; }
 .account-balance p { font-size: 0.8em; color: #999; margin-bottom: 5px; }

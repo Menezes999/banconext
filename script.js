@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const verificationOverlay = document.getElementById('verification-overlay');
     const mobileOverlay = document.getElementById('mobile-overlay');
     
-    // Novo: Seleciona todos os elementos marcados para desfoque no Mobile
-    const blurTargets = document.querySelectorAll('.menu-target'); 
+    // ATUALIZADO: Seleciona APENAS os elementos que devem ser desfocados no Mobile
+    const menuBlurTargets = document.querySelectorAll('.menu-blur-target'); 
 
-    // Elementos para o Desktop Overlay (Criado no JS, como antes)
+    // Elementos para o Desktop Overlay
     const desktopOverlay = document.createElement('div');
     desktopOverlay.id = 'desktop-overlay';
-    desktopOverlay.innerHTML = 'Acesso somente pelo Desktop';
+    desktopOverlay.innerHTML = 'Acesse pelo Desktop';
 
     // Saldo e Long Press
     const actualBalance = 'R$ 3.684,45';
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isMobileView = () => window.innerWidth <= 600; 
     
-    // FUNÇÃO REVERTIDA: Atualiza a hora
+    // FUNÇÃO PARA ATUALIZAR O HORÁRIO
     const updateTime = () => {
         const timeElement = document.querySelector('.lock-time');
         const now = new Date();
@@ -42,8 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateTime, 1000); 
 
     const applyMobileBlur = () => {
-        // Aplica desfoque nos menus e mostra o overlay
-        blurTargets.forEach(el => el.classList.add('menu-blur'));
+        // Aplica desfoque SOMENTE nos elementos designados
+        menuBlurTargets.forEach(el => el.classList.add('menu-blur-target'));
         mobileOverlay.classList.add('active');
     }
 
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(desktopOverlay);
             mainApp.classList.add('blurred');
             lockScreen.classList.add('blurred');
-            mainApp.classList.remove('hidden'); // Exibe o main app desfocado para o overlay cobrir
+            mainApp.classList.remove('hidden'); 
         } else {
             // Mobile: Exibe Lock Screen por padrão
             mainApp.classList.add('hidden');
@@ -68,22 +68,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     
     const unlockApp = () => {
-        // 1. Esconde a tela de bloqueio
         lockScreen.classList.add('hidden');
         
-        // 2. Inicia a ANIMAÇÃO DE VERIFICAÇÃO
         verificationOverlay.classList.add('active');
 
-        // 3. Após a animação, transiciona para a tela principal
         setTimeout(() => {
             verificationOverlay.classList.remove('active');
-            
-            // CORREÇÃO DO BUG: A tela principal estava oculta (`hidden`) e precisa ser exibida.
             mainApp.classList.remove('hidden');
             
-            // 4. Aplica o desfoque nos menus da tela principal (Mobile)
-            applyMobileBlur();
-
+            applyMobileBlur(); // Aplica o desfoque após a transição
         }, 1500); 
     };
 
@@ -132,18 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // FUNÇÕES DA TELA PRINCIPAL
     // ----------------------------------------------------
 
-    balanceElement.textContent = hiddenBalance;
+    // Saldo inicial (oculto)
+    document.getElementById('balance').textContent = hiddenBalance;
 
     // 1. FUNÇÃO TOGGLE SALDO (Botão Olho)
-    if (toggleButton) {
-        toggleButton.addEventListener('click', () => {
+    const toggleButtonElement = document.getElementById('toggle-balance');
+    if (toggleButtonElement) {
+        toggleButtonElement.addEventListener('click', () => {
             if (isHidden) {
-                balanceElement.textContent = actualBalance;
-                toggleButton.textContent = 'visibility';
+                document.getElementById('balance').textContent = actualBalance;
+                toggleButtonElement.textContent = 'visibility';
                 isHidden = false;
             } else {
-                balanceElement.textContent = hiddenBalance;
-                toggleButton.textContent = 'visibility_off';
+                document.getElementById('balance').textContent = hiddenBalance;
+                toggleButtonElement.textContent = 'visibility_off';
                 isHidden = true;
             }
         });
@@ -156,8 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('click', (event) => {
             event.preventDefault();
             
-            // Impede a ação se estiver desfocado (menu-blur) ou no Desktop (blurred)
-            if (element.closest('.menu-target') && element.closest('.menu-target').classList.contains('menu-blur') || mainApp.classList.contains('blurred')) {
+            // Impede a ação se o elemento pai ou o próprio elemento for um "menu-blur-target" e estiver desfocado
+            if (element.closest('.menu-blur-target') && element.closest('.menu-blur-target').classList.contains('menu-blur-target') || mainApp.classList.contains('blurred')) {
                  return;
             }
             

@@ -6,22 +6,209 @@
     --color-dark-gray: #1a1a1a;
 }
 
-/* ... (O restante do CSS global e da tela de bloqueio permanece o mesmo) ... */
+/* Estilos Globais e Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Transição mais rápida para melhorar a sensação de uso em apps */
+    transition: all 0.3s ease-in-out; 
+}
 
-/* ... (Estilos da tela de bloqueio: lock-time, fingerprint-icon, etc. - Sem mudanças) ... */
+body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 0; 
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--color-background);
+    padding: 15px;
+    margin: 0 auto; 
+    position: relative;
+    min-height: 100vh;
+}
+
+.hidden { 
+    display: none !important; 
+}
 
 /* ---------------------------------------------------- */
-/* TELA PRINCIPAL (CORREÇÃO DO BOTÃO 'VER MAIS') */
+/* TELA DE BLOQUEIO */
+/* ---------------------------------------------------- */
+#lock-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    max-width: none !important; 
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.lock-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 90%;
+    width: 100%;
+    padding: 50px 0 20px 0;
+}
+
+/* Horário MAIOR */
+.lock-time {
+    font-size: 5em; 
+    font-weight: 300;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.lock-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.lock-user .avatar {
+    background-color: var(--color-dark-gray); 
+    color: var(--color-neon-green); 
+    width: 60px;
+    height: 60px;
+    font-size: 1.5em; 
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.lock-user .username {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.fingerprint-area {
+    cursor: pointer;
+    position: relative;
+    padding: 30px; 
+    border-radius: 50%;
+}
+
+/* Ícone da Biometria MAIOR */
+.fingerprint-icon {
+    font-size: 10em;
+    color: var(--color-neon-green);
+    margin-bottom: 10px;
+    animation: pulse-neon 2s infinite ease-in-out; 
+}
+
+/* Animação para o Long Press */
+.fingerprint-area.pressed {
+    transform: scale(0.9);
+    box-shadow: 0 0 50px rgba(0, 255, 102, 0.7);
+    background-color: rgba(0, 255, 102, 0.2);
+}
+
+@keyframes pulse-neon {
+    0% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
+    50% { text-shadow: 0 0 15px var(--color-neon-green), 0 0 30px rgba(0, 255, 102, 0.3); transform: scale(1.05); }
+    100% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
+}
+
+.lock-footer {
+    font-size: 0.8em;
+    color: #777;
+}
+
+/* ---------------------------------------------------- */
+/* TELA DE ANIMAÇÃO DE VERIFICAÇÃO */
+/* ---------------------------------------------------- */
+.verification-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95); 
+    z-index: 1001; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+}
+.verification-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.verification-icon {
+    font-size: 10em;
+    color: var(--color-neon-green);
+    animation: bounce-in 0.8s ease-out;
+}
+
+@keyframes bounce-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* ---------------------------------------------------- */
+/* TELA PRINCIPAL E DESFOQUE SELETIVO */
 /* ---------------------------------------------------- */
 
-/* Mantenha todos os estilos da tela principal */
-/* ... */
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
+.user-info { display: flex; align-items: center; }
 
-/* CORREÇÃO APLICADA AQUI */
+/* Avatar da tela principal é menor que o da lock screen */
+.user-info .avatar { 
+    width: 40px; 
+    height: 40px; 
+    font-size: 1.2em; 
+    margin-right: 10px; 
+} 
+.username { font-size: 1.2em; font-weight: 500; }
+.settings-icon { color: var(--color-text-primary); cursor: pointer; }
+
+.account-balance { margin-bottom: 30px; }
+.account-balance p { font-size: 0.8em; color: #999; margin-bottom: 5px; }
+.balance-display { display: flex; align-items: center; font-size: 1.8em; font-weight: bold; }
+.eye-icon { color: var(--color-neon-green); margin-left: 10px; cursor: pointer; font-size: 1.5em; }
+
+.banner { padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+.open-finance { background: linear-gradient(to right, #333 30%, var(--color-neon-green) 100%); display: flex; justify-content: space-between; align-items: center; }
+.open-finance p { font-weight: bold; font-size: 1.1em; color: var(--color-text-primary); }
+.open-finance button { background-color: var(--color-neon-green); color: var(--color-background); border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background-color 0.2s; }
+.open-finance button:hover { background-color: #00cc55; }
+
+.main-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; margin-bottom: 15px; }
+.menu-item { display: flex; flex-direction: column; align-items: center; padding: 15px 5px; cursor: pointer; transition: background-color 0.2s; }
+.menu-item:hover { background-color: #111; border-radius: 8px; }
+.menu-item span:first-child { color: var(--color-neon-green); font-size: 2em; margin-bottom: 5px; }
+.menu-item span:last-child { font-size: 0.9em; }
+
+/* CORREÇÃO DO BOTÃO 'VER MAIS' */
 .ver-mais-btn { 
     background: none; 
     border: 1px solid var(--color-dark-gray); 
-    color: var(--color-neon-green); /* Garante que o texto base seja verde */
+    color: var(--color-neon-green); 
     width: 100%; 
     padding: 10px; 
     border-radius: 20px; 
@@ -36,11 +223,60 @@
 .ver-mais-btn:hover { 
     border-color: var(--color-neon-green); 
 }
-
-/* Garante que o ícone do Material Icon dentro do botão 'ver-mais-btn' também seja verde neon */
+/* CORREÇÃO: Garante que o ícone do Material Icon seja verde neon */
 .ver-mais-btn .material-icons { 
-    color: var(--color-neon-green); /* Adicionado ou verificado */
+    color: var(--color-neon-green); 
     font-size: 1.2em; 
     margin-left: 5px; 
 }
-/* ... (O restante do CSS permanece o mesmo) ... */
+
+.nextshop-banner { background-color: var(--color-dark-gray); padding: 15px; border-radius: 8px; border: 1px solid #333; }
+.nextshop-banner p:first-child { font-size: 0.8em; color: var(--color-neon-green); margin-bottom: 5px; }
+.nextshop-banner p:nth-child(2) { font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+.nextshop-banner button { background-color: transparent; border: 1px solid var(--color-neon-green); color: var(--color-neon-green); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+.nextshop-banner button:hover { background-color: rgba(0, 255, 102, 0.1); }
+
+/* ---------------------------------------------------- */
+/* DESFOQUE DE COMPONENTES E OVERLAY MOBILE */
+/* ---------------------------------------------------- */
+
+/* Desfoque aplicado nos elementos com a classe .menu-blur-target */
+.menu-blur-target {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+/* Overlay do aviso "Acesse pelo Desktop" para Mobile */
+.mobile-overlay {
+    position: absolute;
+    top: 150px; 
+    left: 0;
+    right: 0;
+    margin: 0 15px; 
+    height: 350px; 
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 5; 
+    display: none; 
+    align-items: center;
+    justify-content: center;
+    color: var(--color-neon-green);
+    font-size: 1.5em;
+    font-weight: bold;
+    border-radius: 8px;
+    /* Borda verde REMOVIDA */
+    text-align: center;
+    padding: 20px;
+}
+.mobile-overlay.active {
+    display: flex;
+}
+
+/* Bloqueio Total para Desktop */
+.blurred {
+    filter: blur(4px) grayscale(50%); 
+    opacity: 0.6;
+    pointer-events: none;
+}
+#desktop-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(0, 0, 0, 0.7); z-index: 10; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--color-neon-green); font-size: 2.5em; font-weight: bold; padding: 20px;
+}

@@ -1,51 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // ----------------------------------------------------
+    // ELEMENTOS GLOBAIS
+    // ----------------------------------------------------
+    const lockScreen = document.getElementById('lock-screen');
+    const mainApp = document.getElementById('main-app');
+    const fingerprintBtn = document.getElementById('fingerprint-btn');
     const balanceElement = document.getElementById('balance');
     const toggleButton = document.getElementById('toggle-balance');
 
-    // 1. SALDO ATUALIZADO
+    // Saldo real e oculto
     const actualBalance = 'R$ 3.684,45';
     const hiddenBalance = 'R$ ••••••••';
     let isHidden = true;
 
+    // ----------------------------------------------------
+    // FUNÇÕES DA TELA DE BLOQUEIO
+    // ----------------------------------------------------
+
+    // 1. Atualiza a hora na tela de bloqueio
+    const updateTime = () => {
+        const timeElement = document.querySelector('.lock-time');
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        timeElement.textContent = timeString;
+    };
+    updateTime();
+    setInterval(updateTime, 1000); // Atualiza a cada segundo
+
+    // 2. FUNÇÃO DE DESBLOQUEIO
+    const unlockApp = () => {
+        // Simula o processo de leitura digital
+        const icon = document.querySelector('.fingerprint-icon');
+        icon.style.animation = 'none'; // Para a animação pulsante
+        icon.style.color = '#fff'; // Muda a cor para cinza
+        icon.textContent = 'check_circle'; // Mostra o ícone de 'check'
+
+        // Após um pequeno atraso, faz a transição para a tela principal
+        setTimeout(() => {
+            lockScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            // Remove a classe de tela cheia do lock-screen para o body voltar ao normal
+            lockScreen.classList.remove('lock-screen-active'); 
+        }, 800);
+    };
+
+    // Evento de clique para desbloquear
+    if (fingerprintBtn) {
+        fingerprintBtn.addEventListener('click', unlockApp);
+    }
+
+
+    // ----------------------------------------------------
+    // FUNÇÕES DA TELA PRINCIPAL (EXISTENTES)
+    // ----------------------------------------------------
+
     // Define o saldo inicial no elemento (como oculto)
     balanceElement.textContent = hiddenBalance;
 
-    // 2. FUNÇÃO TOGGLE SALDO (Botão Olho)
-    toggleButton.addEventListener('click', () => {
-        if (isHidden) {
-            // Se estiver oculto, mostra o saldo
-            balanceElement.textContent = actualBalance;
-            toggleButton.textContent = 'visibility'; // Altera o ícone para "olho aberto"
-            isHidden = false;
-        } else {
-            // Se estiver visível, oculta o saldo
-            balanceElement.textContent = hiddenBalance;
-            toggleButton.textContent = 'visibility_off'; // Altera o ícone para "olho fechado"
-            isHidden = true;
-        }
-        console.log(`Ação: Saldo foi ${isHidden ? 'ocultado' : 'exibido'}.`);
-    });
+    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho)
+    if (toggleButton) {
+        toggleButton.addEventListener('click', () => {
+            if (isHidden) {
+                balanceElement.textContent = actualBalance;
+                toggleButton.textContent = 'visibility';
+                isHidden = false;
+            } else {
+                balanceElement.textContent = hiddenBalance;
+                toggleButton.textContent = 'visibility_off';
+                isHidden = true;
+            }
+            console.log(`Ação: Saldo foi ${isHidden ? 'ocultado' : 'exibido'}.`);
+        });
+    }
 
-
-    // 3. FUNÇÕES PARA TODOS OS OUTROS BOTÕES E MENUS
-    // Seleciona todos os elementos que possuem o atributo data-action
-    const functionalElements = document.querySelectorAll('[data-action]');
+    // 2. FUNÇÕES PARA TODOS OS OUTROS BOTÕES E MENUS
+    const functionalElements = document.querySelectorAll('#main-app [data-action]');
 
     functionalElements.forEach(element => {
-        // Ignora o botão de toggle-balance que já tem um evento específico
         if (element.id === 'toggle-balance') {
             return;
         }
 
         element.addEventListener('click', (event) => {
-            // Previne a ação padrão (se for um link ou form)
             event.preventDefault();
-
-            // Pega o nome da ação definida no HTML
             const action = element.getAttribute('data-action');
             let message = '';
 
-            // Lógica de simulação de clique
             switch (action) {
                 case 'settings':
                     message = 'Ação: Abrir Configurações da Conta.';
@@ -72,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     message = 'Ação Desconhecida: ' + action;
             }
 
-            // Exibe a simulação em um alerta
             alert(message);
             console.log(message);
         });

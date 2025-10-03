@@ -11,7 +11,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* Transição mais rápida para melhorar a sensação de uso em apps */
     transition: all 0.3s ease-in-out; 
 }
 
@@ -40,7 +39,7 @@ body {
 }
 
 /* ---------------------------------------------------- */
-/* TELA DE BLOQUEIO */
+/* TELA DE BLOQUEIO (CORREÇÕES ANTI-SELEÇÃO) */
 /* ---------------------------------------------------- */
 #lock-screen {
     position: fixed;
@@ -55,10 +54,17 @@ body {
     justify-content: center;
     text-align: center;
     flex-direction: column;
-    /* CORREÇÃO: Impede que o usuário selecione o ícone ou texto (que dispara o menu de contexto) */
-    -webkit-user-select: none; /* Safari */
+    
+    /* CORREÇÃO ROBUSTA CONTRA O BUG DA SELEÇÃO AZUL */
+    -webkit-user-select: none; /* iOS/Safari */
     -ms-user-select: none;     /* IE/Edge */
     user-select: none;         /* Padrão */
+    
+    /* Previne o menu de contexto (Long Press) */
+    -webkit-touch-callout: none;
+    
+    /* Previne o realce azul do Android e Chrome no toque */
+    -webkit-tap-highlight-color: transparent; 
 }
 
 .lock-content {

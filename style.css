@@ -11,7 +11,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* Transição suave para o desbloqueio e desfoque */
     transition: all 0.4s ease-in-out; 
 }
 
@@ -20,9 +19,8 @@ body {
     color: var(--color-text-primary);
     font-family: Arial, sans-serif;
     display: flex;
-    /* Centraliza o conteúdo (será a tela do app após o desbloqueio) */
     justify-content: center;
-    padding: 0; /* Remove o padding do body para a lock screen */
+    padding: 0; 
     min-height: 100vh;
 }
 
@@ -31,20 +29,18 @@ body {
     max-width: 400px;
     background-color: var(--color-background);
     padding: 15px;
-    /* Garante que o container principal fique no centro após o desbloqueio */
     margin: 0 auto; 
 }
 
 /* ---------------------------------------------------- */
-/* TELA DE BLOQUEIO (CORREÇÃO DE POSICIONAMENTO) */
+/* TELA DE BLOQUEIO */
 /* ---------------------------------------------------- */
 #lock-screen {
-    /* Garante que a lock screen cubra toda a janela */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh; /* Usa a altura da viewport */
+    height: 100vh;
     max-width: none !important; 
     z-index: 1000;
     display: flex;
@@ -64,19 +60,61 @@ body {
     padding: 50px 0 20px 0;
 }
 
-/* Estilos da Digital e Animação */
+/* NOVO: Estilo para o logo "next" */
+.next-logo {
+    font-family: 'Arial Black', Gadget, sans-serif;
+    font-size: 2.5em;
+    font-weight: 900;
+    color: var(--color-neon-green);
+    margin-bottom: 20px;
+}
+
+
+.lock-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.lock-user .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.lock-user .username {
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
 .fingerprint-area {
     cursor: pointer;
     position: relative;
-    /* Para centralizar o ícone de carregamento */
+    /* Adicionado padding para facilitar o clique/toque no celular */
+    padding: 20px;
+    border-radius: 50%;
 }
 
+/* Ícone da Biometria MAIOR */
 .fingerprint-icon {
-    font-size: 6em;
+    font-size: 8em; /* Aumentado de 6em para 8em */
     color: var(--color-neon-green);
     margin-bottom: 10px;
     animation: pulse-neon 2s infinite ease-in-out; 
 }
+
+/* Novo estilo para simular o "pressionar e segurar" */
+.fingerprint-area.pressed {
+    transform: scale(0.95);
+    box-shadow: 0 0 30px rgba(0, 255, 102, 0.5);
+    background-color: rgba(0, 255, 102, 0.1);
+}
+.fingerprint-area.pressed .fingerprint-icon {
+    color: #00cc55; /* Escurece um pouco enquanto pressionado */
+}
+
 
 @keyframes pulse-neon {
     0% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
@@ -84,18 +122,21 @@ body {
     100% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
 }
 
-/* ---------------------------------------------------- */
-/* ESTILOS DA TELA PRINCIPAL (APÓS DESBLOQUEIO) */
-/* ---------------------------------------------------- */
-
-/* 1. Efeito de desfoque/opacidade para simular o bloqueio de Desktop */
-.blurred {
-    filter: blur(4px) grayscale(50%); /* Aplica desfoque e cinza */
-    opacity: 0.6;
-    pointer-events: none; /* Impede cliques nos botões/menus */
+.lock-footer {
+    font-size: 0.8em;
+    color: #777;
 }
 
-/* 2. Camada de aviso para Desktop */
+/* ---------------------------------------------------- */
+/* ESTILOS DA TELA PRINCIPAL E BLOQUEIO DE DESKTOP */
+/* ---------------------------------------------------- */
+
+.blurred {
+    filter: blur(4px) grayscale(50%); 
+    opacity: 0.6;
+    pointer-events: none;
+}
+
 #desktop-overlay {
     position: fixed;
     top: 0;
@@ -103,7 +144,7 @@ body {
     width: 100%;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
-    z-index: 10; /* Fica acima da tela do app */
+    z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,22 +153,13 @@ body {
     font-size: 2.5em;
     font-weight: bold;
     padding: 20px;
-    /* Oculto por padrão no celular, mas visível no Desktop */
 }
 
-/* Classes utilitárias */
 .hidden {
     display: none !important;
 }
 
-/* O resto do CSS do banco (cores, menus, botões) continua o mesmo. */
-
 /* ... (Mantenha o restante do CSS anterior aqui) ... */
-.lock-time { font-size: 4em; font-weight: 300; color: #ccc; margin-bottom: 20px; }
-.lock-user { display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; }
-.lock-user .avatar { width: 60px; height: 60px; font-size: 1.5em; margin-bottom: 10px; }
-.lock-user .username { font-size: 1.1em; font-weight: 600; }
-.lock-footer { font-size: 0.8em; color: #777; }
 .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
 .user-info { display: flex; align-items: center; }
 .avatar { background-color: var(--color-dark-gray); color: var(--color-neon-green); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-right: 10px; }

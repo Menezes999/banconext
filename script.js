@@ -6,18 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainApp = document.getElementById('main-app');
     const fingerprintArea = document.getElementById('fingerprint-btn');
     const fingerprintIcon = document.querySelector('.fingerprint-icon');
-    const verificationOverlay = document.getElementById('verification-overlay'); // Novo elemento de animação
-    const mobileOverlay = document.getElementById('mobile-overlay'); // Novo overlay mobile
-    const blurTargets = document.querySelectorAll('.banner, .main-menu, .ver-mais-btn, .nextshop-banner'); // Elementos a serem desfocados
+    const verificationOverlay = document.getElementById('verification-overlay');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    
+    // Novo: Seleciona todos os elementos marcados para desfoque no Mobile
+    const blurTargets = document.querySelectorAll('.menu-target'); 
 
-    const balanceElement = document.getElementById('balance');
-    const toggleButton = document.getElementById('toggle-balance');
+    // Elementos para o Desktop Overlay (Criado no JS, como antes)
+    const desktopOverlay = document.createElement('div');
+    desktopOverlay.id = 'desktop-overlay';
+    desktopOverlay.innerHTML = 'Acesso somente pelo Desktop';
 
+    // Saldo e Long Press
     const actualBalance = 'R$ 3.684,45';
     const hiddenBalance = 'R$ ••••••••';
     let isHidden = true;
-    
-    // Variáveis para o Long Press
     const LONG_PRESS_TIME = 1000;
     let pressTimer = null;
 
@@ -27,6 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     
     const isMobileView = () => window.innerWidth <= 600; 
+    
+    // FUNÇÃO REVERTIDA: Atualiza a hora
+    const updateTime = () => {
+        const timeElement = document.querySelector('.lock-time');
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        if (timeElement) timeElement.textContent = timeString;
+    };
+    updateTime();
+    setInterval(updateTime, 1000); 
 
     const applyMobileBlur = () => {
         // Aplica desfoque nos menus e mostra o overlay
@@ -35,13 +48,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const initializeScreenState = () => {
-        // Se for Desktop: Aplica bloqueio total (Blur + Overlay de Desktop)
         if (!isMobileView()) {
+            // Desktop: Bloqueio total
             document.body.appendChild(desktopOverlay);
             mainApp.classList.add('blurred');
             lockScreen.classList.add('blurred');
+            mainApp.classList.remove('hidden'); // Exibe o main app desfocado para o overlay cobrir
         } else {
-            // Se for Mobile: Garante que a tela de bloqueio seja a única visível
+            // Mobile: Exibe Lock Screen por padrão
             mainApp.classList.add('hidden');
             lockScreen.classList.remove('hidden');
         }
@@ -57,18 +71,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Esconde a tela de bloqueio
         lockScreen.classList.add('hidden');
         
-        // 2. Inicia a ANIMAÇÃO DE VERIFICAÇÃO (tela cheia)
+        // 2. Inicia a ANIMAÇÃO DE VERIFICAÇÃO
         verificationOverlay.classList.add('active');
 
         // 3. Após a animação, transiciona para a tela principal
         setTimeout(() => {
             verificationOverlay.classList.remove('active');
+            
+            // CORREÇÃO DO BUG: A tela principal estava oculta (`hidden`) e precisa ser exibida.
             mainApp.classList.remove('hidden');
             
             // 4. Aplica o desfoque nos menus da tela principal (Mobile)
             applyMobileBlur();
 
-        }, 1500); // Exibe a animação por 1.5 segundos
+        }, 1500); 
     };
 
     // Função que começa a contagem do tempo (Long Press)
@@ -78,13 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Previne o zoom padrão no touch
         e.preventDefault(); 
         
         if (pressTimer === null) {
             fingerprintArea.classList.add('pressed');
             pressTimer = setTimeout(function() {
-                // Desbloqueio acionado
                 unlockApp();
             }, LONG_PRESS_TIME);
         }
@@ -94,10 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelPress = () => {
         if (pressTimer !== null) {
             clearTimeout(pressTimer);
-            // Se o timer ainda não terminou, significa que soltou antes do tempo.
             if (pressTimer !== null) {
-                // Simulação: A biometria falhou ou foi solta antes.
-                fingerprintIcon.style.color = '#ff3333'; // Vermelho para falha
+                fingerprintIcon.style.color = '#ff3333';
                 setTimeout(() => {
                     fingerprintIcon.style.color = 'var(--color-neon-green)';
                 }, 300);
@@ -109,23 +121,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ------------------- EVENT LISTENERS -------------------
     
-    // Eventos para Desktop (Mouse)
     fingerprintArea.addEventListener('mousedown', startPress);
     fingerprintArea.addEventListener('mouseup', cancelPress);
     fingerprintArea.addEventListener('mouseleave', cancelPress); 
-
-    // Eventos para Mobile (Touch)
     fingerprintArea.addEventListener('touchstart', startPress);
     fingerprintArea.addEventListener('touchend', cancelPress);
     fingerprintArea.addEventListener('touchcancel', cancelPress);
     
     // ----------------------------------------------------
-    // FUNÇÕES DA TELA PRINCIPAL (EXISTENTES)
+    // FUNÇÕES DA TELA PRINCIPAL
     // ----------------------------------------------------
 
     balanceElement.textContent = hiddenBalance;
 
-    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho) - Sem desfoque!
+    // 1. FUNÇÃO TOGGLE SALDO (Botão Olho)
     if (toggleButton) {
         toggleButton.addEventListener('click', () => {
             if (isHidden) {
@@ -147,12 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('click', (event) => {
             event.preventDefault();
             
-            // Impede a ação se estiver desfocado ou no Desktop
-            if (mainApp.classList.contains('blurred') || element.classList.contains('menu-blur')) {
+            // Impede a ação se estiver desfocado (menu-blur) ou no Desktop (blurred)
+            if (element.closest('.menu-target') && element.closest('.menu-target').classList.contains('menu-blur') || mainApp.classList.contains('blurred')) {
                  return;
             }
             
-            // ... (Mantenha a lógica dos botões anterior) ...
             const action = element.getAttribute('data-action');
             let message = '';
             switch (action) {

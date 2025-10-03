@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>next - Conta Digital (Design Simulado)</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="top-bar">
+            <div class="user-info">
+                <span class="avatar">CM</span>
+                <span class="username">CRISTIANO MENEZES</span>
+            </div>
+            <span class="material-icons settings-icon" data-action="settings">settings</span>
+        </header>
+
+        <section class="account-balance">
+            <p>SALDO CONTA-CORRENTE</p>
+            <div class="balance-display">
+                <span id="balance">R$ ••••••••</span>
+                <span class="material-icons eye-icon" id="toggle-balance" data-action="toggle-balance">visibility_off</span>
+            </div>
+        </section>
+
+        <section class="banner open-finance">
+            <p>OpenFinance</p>
+            <button data-action="share-data">COMPARTILHE SEUS DADOS</button>
+        </section>
+
+        <section class="main-menu">
+            <div class="menu-item" data-action="extrato">
+                <span class="material-icons">paid</span>
+                <span>Saldo e extrato</span>
+            </div>
+            <div class="menu-item" data-action="pix">
+                <span class="material-icons">qr_code_2</span>
+                <span>Pix</span>
+            </div>
+            <div class="menu-item" data-action="pagamentos">
+                <span class="material-icons">receipt_long</span>
+                <span>Pagamentos</span>
+            </div>
+        </section>
+
+        <button class="ver-mais-btn" data-action="ver-mais">ver mais <span class="material-icons">expand_more</span></button>
+
+        <footer class="nextshop-banner">
+            <p>nextShop</p>
+            <p>Proteja o que faz tudo valer a pena: o sorriso da sua família!</p>
+            <button data-action="contratar-seguro">Contrate por R$1,25/dia!</button>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -30,6 +30,7 @@ body {
     background-color: var(--color-background);
     padding: 15px;
     margin: 0 auto; 
+    position: relative; /* Importante para o overlay mobile */
 }
 
 /* ---------------------------------------------------- */
@@ -60,15 +61,14 @@ body {
     padding: 50px 0 20px 0;
 }
 
-/* NOVO: Estilo para o logo "next" */
-.next-logo {
-    font-family: 'Arial Black', Gadget, sans-serif;
-    font-size: 2.5em;
-    font-weight: 900;
+/* NOVO: Estilo para o Logo Aleatório */
+.app-logo {
+    font-size: 5em; 
     color: var(--color-neon-green);
+    /* Efeito de brilho sutil */
+    text-shadow: 0 0 10px rgba(0, 255, 102, 0.5); 
     margin-bottom: 20px;
 }
-
 
 .lock-user {
     display: flex;
@@ -77,89 +77,115 @@ body {
     margin-bottom: 50px;
 }
 
-.lock-user .avatar {
-    width: 60px;
-    height: 60px;
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.lock-user .username {
-    font-size: 1.1em;
-    font-weight: 600;
-}
-
 .fingerprint-area {
     cursor: pointer;
     position: relative;
-    /* Adicionado padding para facilitar o clique/toque no celular */
-    padding: 20px;
+    padding: 30px; /* Mais padding para área maior de toque */
     border-radius: 50%;
 }
 
 /* Ícone da Biometria MAIOR */
 .fingerprint-icon {
-    font-size: 8em; /* Aumentado de 6em para 8em */
+    font-size: 10em; /* Aumentado de 8em para 10em */
     color: var(--color-neon-green);
     margin-bottom: 10px;
     animation: pulse-neon 2s infinite ease-in-out; 
 }
 
-/* Novo estilo para simular o "pressionar e segurar" */
 .fingerprint-area.pressed {
-    transform: scale(0.95);
-    box-shadow: 0 0 30px rgba(0, 255, 102, 0.5);
-    background-color: rgba(0, 255, 102, 0.1);
-}
-.fingerprint-area.pressed .fingerprint-icon {
-    color: #00cc55; /* Escurece um pouco enquanto pressionado */
-}
-
-
-@keyframes pulse-neon {
-    0% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
-    50% { text-shadow: 0 0 15px var(--color-neon-green), 0 0 30px rgba(0, 255, 102, 0.3); transform: scale(1.05); }
-    100% { text-shadow: 0 0 5px var(--color-neon-green); transform: scale(1); }
-}
-
-.lock-footer {
-    font-size: 0.8em;
-    color: #777;
+    transform: scale(0.9);
+    box-shadow: 0 0 50px rgba(0, 255, 102, 0.7);
+    background-color: rgba(0, 255, 102, 0.2);
 }
 
 /* ---------------------------------------------------- */
-/* ESTILOS DA TELA PRINCIPAL E BLOQUEIO DE DESKTOP */
+/* NOVO: ANIMAÇÃO DE VERIFICAÇÃO CENTRALIZADA */
 /* ---------------------------------------------------- */
-
-.blurred {
-    filter: blur(4px) grayscale(50%); 
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-#desktop-overlay {
+.verification-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1001; /* Acima da tela de bloqueio */
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    opacity: 0;
+    pointer-events: none;
+}
+.verification-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.verification-icon {
+    font-size: 10em;
     color: var(--color-neon-green);
-    font-size: 2.5em;
+    animation: bounce-in 0.8s ease-out;
+}
+
+@keyframes bounce-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+/* ---------------------------------------------------- */
+/* DESFOQUE DE COMPONENTES E OVERLAY MOBILE */
+/* ---------------------------------------------------- */
+
+/* Desfoque aplicado em elementos internos no Mobile */
+.menu-blur {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+/* Overlay do aviso "Acesse pelo Desktop" para Mobile */
+.mobile-overlay {
+    position: absolute;
+    top: 150px; /* Posição sobre os menus e banners */
+    left: 0;
+    right: 0;
+    margin: 0 15px; /* Alinhado ao padding do .app-container */
+    height: 400px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 5; /* Abaixo do lock screen, mas acima dos menus */
+    display: none; /* Inicia oculto */
+    align-items: center;
+    justify-content: center;
+    color: var(--color-neon-green);
+    font-size: 1.5em;
     font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid var(--color-neon-green);
+    text-align: center;
     padding: 20px;
 }
-
-.hidden {
-    display: none !important;
+.mobile-overlay.active {
+    display: flex;
 }
 
+/* Bloqueio Total para Desktop (mantido) */
+.blurred {
+    filter: blur(4px) grayscale(50%); 
+    opacity: 0.6;
+    pointer-events: none;
+}
+#desktop-overlay {
+    /* ... (Estilos de desktop-overlay permanecem os mesmos) ... */
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: rgba(0, 0, 0, 0.7); z-index: 10; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--color-neon-green); font-size: 2.5em; font-weight: bold; padding: 20px;
+}
+.hidden { display: none !important; }
+
 /* ... (Mantenha o restante do CSS anterior aqui) ... */
+.lock-user { display: flex; flex-direction: column; align-items: center; margin-bottom: 50px; }
+.lock-user .avatar { width: 60px; height: 60px; font-size: 1.5em; margin-bottom: 10px; }
+.lock-user .username { font-size: 1.1em; font-weight: 600; }
+.lock-footer { font-size: 0.8em; color: #777; }
 .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin-bottom: 20px; }
 .user-info { display: flex; align-items: center; }
 .avatar { background-color: var(--color-dark-gray); color: var(--color-neon-green); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; margin-right: 10px; }
